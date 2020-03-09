@@ -22,7 +22,7 @@ class ReactWeatherBlock extends BlockBase {
     $build['react_weather_block'] = [
       '#markup' => '<div id="weather-app"></div>',
       '#attached' => [
-        'library' => 'react_weather_block/react-weather-block'
+        'library' => ['react_weather_block/react', 'react_weather_block/react-weather-block'],
       ],
     ];
     return $build;
