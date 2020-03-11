@@ -1,0 +1,41 @@
+{
+  "name": "react_weather_block",
+  "version": "1.0.0",
+  "description": "This is an experimental decoupled module for Drupal that I am developing as a learning experience. Not intended for use in the real world.",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier \"app/**/*.{js,html}\" --write",
+    "lint": "eslint \"app/**/*.{js,jsx}\" --quiet",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack -d --config ./webpack.config.js",
+    "watch": "webpack -d --watch --config ./webpack.config.js",
+    "prod": "webpack -p --config ./webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elm45/react_weather_block.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elm45/react_weather_block/issues"
+  },
+  "homepage": "https://github.com/elm45/react_weather_block#readme",
+  "devDependencies": {
+    "@babel/core": "^7.8.7",
+    "@babel/preset-env": "^7.8.7",
+    "@babel/preset-react": "^7.8.3",
+    "babel-loader": "^8.0.6",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.10.0",
+    "parcel-bundler": "^1.12.4",
+    "prettier": "^1.19.1",
+    "webpack": "^4.42.0",
+    "webpack-cli": "^3.3.11"
+  },
+  "dependencies": {
+    "react": "^16.13.0",
+    "react-dom": "^16.13.0"
+  }
+}
