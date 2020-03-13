@@ -2,4 +2,4 @@ react-weather-block:
   version: 1.0.0
   footer: true
   js:
-    dist/index.js: { preprocess: 0 }
+    app_dist/index.js: { preprocess: 0 }

@@ -20,7 +20,7 @@ class ReactWeatherBlock extends BlockBase {
   public function build() {
     $build = [];
     $build['react_weather_block'] = [
-      '#markup' => '<div id="weather-app">NOT RENDERED</div>',
+      '#markup' => '<div id="weather-app">Loading...</div>',
       '#attached' => [
         'library' => ['react_weather_block/react', 'react_weather_block/react-weather-block'],
       ],
