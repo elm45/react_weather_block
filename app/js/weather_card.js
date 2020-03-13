@@ -1,12 +1,6 @@
 import React from "react";
 
-export default function WeatherCard({
-  icon,
-  condition,
-  temperature,
-  feelsLike,
-  description
-}) {
+function WeatherCard({ icon, condition, temperature, feelsLike, description }) {
   return (
     <div className="weather-card">
       <div className="weather-card__icon">{icon}</div>
@@ -19,3 +13,5 @@ export default function WeatherCard({
     </div>
   );
 }
+
+export default WeatherCard;
