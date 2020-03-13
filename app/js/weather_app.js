@@ -19,46 +19,70 @@ function WeatherApp() {
     const res = await fetch(url);
     const { weather, main, dt, name } = await res.json();
 
-    function arrayToFormattedString(object, targetItem) {
+    /**
+     * Creates formatted string from multiple object keys.
+     *
+     * Compiles keys for multiple keys into an array and then joins the array,
+     * if it has more than one item, into a comma separated string, using `and`
+     * as the separator for the last item. The formatted string is returned.
+     *
+     * @param {string} keyName   The name of the key that should be pushed to the array.
+     * @param {Object} objectVar  The object that should be looped through for the provided keyName.
+     *
+     * @return {string} Return value description.
+     */
+    function arrayToFormattedString(objectVar, keyName) {
       let result;
       const resultArray = [];
       // If multiple results, merge target items into an array.
-      if (object) {
+      if (objectVar) {
         weather.forEach(element => {
-          resultArray.push(element[targetItem]);
+          resultArray.push(element[keyName]);
         });
       }
       // If multiple results, join array with commas and last item joined by 'and'
       // else convert the array to a formatted string.
       if (resultArray.length > 1) {
         result =
-          resultArray.slice(0, -1).join(",") + " and " + resultArray.slice(-1);
+          resultArray.slice(0, -1).join(", ") + " and " + resultArray.slice(-1);
       } else {
         result = resultArray.toString();
       }
       return result;
     }
 
+    /**
+     * Temperature format.
+     *
+     * Rounds a number to the nearest whole number and adds a degrees fahrenheit suffix.
+     *
+     * @param {number} temperature The number to be formatted.
+     *
+     * @return {string} Returns a string representing the temperature as degrees fabrenheit.
+     */
     function formatTemperature(temperature) {
       return Math.round(temperature) + "\u2109";
     }
 
-    const weatherDate = new Date(dt * 1000);
-
-    const date = {
-      month: weatherDate.toLocaleString("default", { month: "long" }),
-      weekday: weatherDate.toLocaleString("default", { weekday: "long" }),
-      dayNum: weatherDate.toLocaleString("default", { day: "numeric" })
-    };
-
-    const icon = weather[0].icon; // If multiple weather results, use the first result's icon.
-    const condition = arrayToFormattedString(weather, "main");
-    const temperature = formatTemperature(main.temp);
-    const feelsLike = "feels like " + formatTemperature(main.feels_like);
-    const minTemperature = formatTemperature(main.temp_min);
-    const maxTemperature = formatTemperature(main.temp_max);
-    let description = arrayToFormattedString(weather, "description");
-    description = `Currently in ${name}, expect ${description} with a high of ${maxTemperature} and a low of ${minTemperature}`;
+    const weatherDate = new Date(dt * 1000),
+      date = {
+        month: weatherDate.toLocaleString("default", { month: "long" }),
+        weekday: weatherDate.toLocaleString("default", { weekday: "long" }),
+        dayNum: weatherDate.toLocaleString("default", { day: "numeric" })
+      },
+      iconPath =
+        window.drupalSettings.path.baseUrl +
+        "modules/custom/react_weather_block/app/icons/",
+      icon = iconPath + weather[0].icon + "@2x.png", // If multiple weather results, use the first result's icon.
+      condition = arrayToFormattedString(weather, "main"),
+      temperature = formatTemperature(main.temp),
+      feelsLike = "feels like " + formatTemperature(main.feels_like),
+      minTemperature = formatTemperature(main.temp_min),
+      maxTemperature = formatTemperature(main.temp_max),
+      description = `Currently in ${name}, expect ${arrayToFormattedString(
+        weather,
+        "description"
+      )} with a high of ${maxTemperature} and a low of ${minTemperature}`;
 
     setWeatherData({
       icon,
