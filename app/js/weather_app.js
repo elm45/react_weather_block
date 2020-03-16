@@ -2,22 +2,25 @@ import React, { useEffect, useState } from "react";
 import WeatherCard from "./weather_card";
 
 function WeatherApp() {
+  const { apiKey, zipCode } = drupalSettings.ReactWeatherBlock;
   const WEATHER_API_ROOT = "http://api.openweathermap.org/data/2.5/weather";
   // API Arguments
-  let zip = "?zip=02109";
+  let zip = zipCode ? `?zip=${zipCode}` : "?zip=02109"; // Defaults to Boston if not set.
   let country = "US";
   let units = "&units=Imperial";
-  const appID = "&appid=09225afb1d862095b22f7ea6a7e50471";
+  const appID = `&appid=${apiKey}`;
   // API Arguments String
   let weatherDataSource = `${zip},${country}${units}${appID}`;
   // Concat into API call URL.
-  const url = WEATHER_API_ROOT + weatherDataSource;
-
+  const weatherUrl = WEATHER_API_ROOT + weatherDataSource;
   const [weatherData, setWeatherData] = useState({});
 
+  // Call Open Weather API and configure data.
   async function fetchWeatherData() {
-    const res = await fetch(url);
-    const { weather, main, dt, name } = await res.json();
+    // let defaultContent = '<div class="weather-app__loading">Loading...</div>';
+    const response = await fetch(weatherUrl);
+    const weatherJson = await response.json();
+    const { cod, message, weather, main, dt, name } = weatherJson;
 
     /**
      * Creates formatted string from multiple object keys.
@@ -64,27 +67,39 @@ function WeatherApp() {
       return Math.round(temperature) + "\u2109";
     }
 
-    const weatherDate = new Date(dt * 1000),
+    const weatherDate = dt ? new Date(dt * 1000) : null,
       date = {
-        month: weatherDate.toLocaleString("default", { month: "long" }),
-        weekday: weatherDate.toLocaleString("default", { weekday: "long" }),
-        dayNum: weatherDate.toLocaleString("default", { day: "numeric" })
+        month: weatherDate
+          ? weatherDate.toLocaleString("default", { month: "long" })
+          : null,
+        weekday: weatherDate
+          ? weatherDate.toLocaleString("default", { weekday: "long" })
+          : null,
+        dayNum: weatherDate
+          ? weatherDate.toLocaleString("default", { day: "numeric" })
+          : null
       },
       iconPath =
-        window.drupalSettings.path.baseUrl +
+        drupalSettings.path.baseUrl +
         "modules/custom/react_weather_block/app/icons/",
-      icon = iconPath + weather[0].icon + "@2x.png", // If multiple weather results, use the first result's icon.
+      icon = weather ? iconPath + weather[0].icon + "@2x.png" : null, // If multiple weather results, use the first result's icon.
       condition = arrayToFormattedString(weather, "main"),
-      temperature = formatTemperature(main.temp),
-      feelsLike = "feels like " + formatTemperature(main.feels_like),
-      minTemperature = formatTemperature(main.temp_min),
-      maxTemperature = formatTemperature(main.temp_max),
-      description = `Currently in ${name}, expect ${arrayToFormattedString(
-        weather,
-        "description"
-      )} with a high of ${maxTemperature} and a low of ${minTemperature}`;
+      temperature = main ? formatTemperature(main.temp) : null,
+      feelsLike = main
+        ? "feels like " + formatTemperature(main.feels_like)
+        : null,
+      minTemperature = main ? formatTemperature(main.temp_min) : null,
+      maxTemperature = main ? formatTemperature(main.temp_max) : null,
+      description = name
+        ? `Currently in ${name}, expect ${arrayToFormattedString(
+            weather,
+            "description"
+          )} with a high of ${maxTemperature} and a low of ${minTemperature}`
+        : null;
 
     setWeatherData({
+      cod,
+      message,
       icon,
       condition,
       description,
@@ -102,6 +117,10 @@ function WeatherApp() {
 
   return (
     <div className="weather-app__content">
+      {!weatherData.name ? <p>{weatherData.defaultContent}</p> : null}
+      {weatherData.cod < 200 || weatherData.cod >= 300
+        ? weatherData.message
+        : null}
       {weatherData.name && (
         <div className="weather-app__city">{weatherData.name}</div>
       )}
@@ -118,13 +137,15 @@ function WeatherApp() {
           </span>
         </div>
       )}
-      <WeatherCard
-        icon={weatherData.icon}
-        condition={weatherData.condition}
-        temperature={weatherData.temperature}
-        feelsLike={weatherData.feelsLike}
-        description={weatherData.description}
-      />
+      {weatherData.temperature && (
+        <WeatherCard
+          icon={weatherData.icon}
+          condition={weatherData.condition}
+          temperature={weatherData.temperature}
+          feelsLike={weatherData.feelsLike}
+          description={weatherData.description}
+        />
+      )}
     </div>
   );
 }
