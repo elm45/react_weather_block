@@ -3,3 +3,4 @@ type: module
 description: 'A decoupled weather block using the Open Weather Map API.'
 core: 8.x
 package: 'React Blocks'
+core_version_requirement: ^8 || ^9
