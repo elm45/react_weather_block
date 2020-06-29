@@ -19,7 +19,7 @@ This is an **experimental** decoupled module for Drupal that I am developing as 
 - Download the module to the `modules/custom` folder of your Drupal region
 - On the command line, cd into `react_weather_block`
 - Run `npm install`
-- Run `npm dev` to build your app for production
+- Run `npm run dev` to build your app for production
 - In your Drupal _admin > block > structure_, place the **React Weather Block** into a theme region
 - In your block configuration provide:
   - Your Open Weather API key in the block configuration.
